@@ -1,0 +1,196 @@
+=====================================================================
+MÜLL GUMBL – NUTZUNGSLIZENZ
+Freeware für ein nicht-kommerzielles Hobby- und Fanprojekt
+Lizenz-Version 1.0
+=====================================================================
+
+Copyright © 2026 MülltaucherAhPossum. Die Nutzung ist nur nach den folgenden Lizenzbedingungen erlaubt.
+Kontakt: muellgumbl.wasp766@slmails.com
+
+Maßgeblich ist diese deutsche Fassung. Eine englische Übersetzung
+steht weiter unten (English version below).
+
+Dies ist eine eigene Freeware-Lizenz und keine Open-Source-Lizenz.
+Alle Rechte bleiben beim Urheber, soweit sie unten nicht ausdrücklich
+eingeräumt werden.
+
+
+§ 1  Was diese Lizenz umfasst
+
+„Das Spiel“ sind alle Dateien in diesem Paket (das Spiel „Müll Gumbl“
+und die Zusatzdateien, z. B. das eigenständige Solitär), einschließlich
+Programmcode, Grafiken, Animationen, Sounds, Musik, Texte, Namen und
+Spielfiguren.
+
+
+§ 2  Das ist erlaubt
+
+Du darfst
+
+ a) das Spiel kostenlos herunterladen, starten und spielen;
+
+ b) das Spiel kostenlos an andere weitergeben, auf anderen Plattformen
+    anbieten oder darauf verlinken – aber nur unverändert, vollständig
+    und zusammen mit dieser Lizenzdatei;
+
+ c) das Spiel öffentlich zeigen, streamen, aufzeichnen und in Let's
+    Plays, Tests, Anleitungen oder Berichten verwenden;
+
+ d) Screenshots, Memes, GIFs, Videos, Fanart und ähnliche kreative
+    Inhalte erstellen und veröffentlichen, die das Spiel zeigen oder
+    darauf basieren – auch mit Einnahmen aus diesen Inhalten (z. B.
+    Werbeeinnahmen auf YouTube oder Twitch);
+
+ e) das Spiel für dich selbst privat anpassen (z. B. Werte oder Farben
+    ändern), solange du die angepasste Fassung nicht veröffentlichst
+    oder weitergibst;
+
+ f) deine eigenen Spielstände sichern, wiederherstellen und auf deinen
+    eigenen Geräten verwenden.
+
+Inhalte nach Buchstabe d gelten ausdrücklich nicht als verbotene
+Veränderung des Spiels.
+
+
+§ 3  Das ist nicht erlaubt
+
+ 1. Verkauf: Das Spiel oder Teile davon dürfen nicht verkauft,
+    vermietet oder kostenpflichtig angeboten werden. Sie dürfen auch
+    nicht nur gegen Bezahlung, Abo, Mitgliedschaft oder als Teil eines
+    kostenpflichtigen Pakets erhältlich sein. Für die Nutzung und
+    Weitergabe des Spiels selbst darf kein Entgelt verlangt werden.
+
+ 2. Veränderte Fassungen: Veränderte, erweiterte, umgebaute oder neu
+    verpackte Fassungen (Mods, Hacks, Cheat-Versionen, Re-Skins,
+    Übersetzungen, Forks mit geänderten Dateien) dürfen nicht
+    veröffentlicht oder weitergegeben werden – auch nicht kostenlos.
+
+ 3. Übernahme in eigene Projekte: Programmcode, Grafiken, Animationen,
+    Sounds, Musik, Texte, Figuren oder andere Bestandteile dürfen nicht
+    in ein eigenes Projekt übernommen werden, das veröffentlicht oder
+    weitergegeben wird.
+
+ 4. Falsche Urheberschaft: Du darfst das Spiel oder Teile davon nicht
+    als eigene Arbeit ausgeben. Urheberhinweise und diese Lizenz dürfen
+    nicht entfernt werden. Du darfst nicht behaupten, der Urheber
+    unterstütze deine Veröffentlichung oder sie sei „offiziell“.
+
+
+§ 4  Plattformen mit Werbung
+
+Plattformen, die sich allgemein über Werbung finanzieren (z. B.
+Videoportale oder Spieleportale), dürfen das Spiel nach § 2 b anbieten,
+solange das Spiel dort selbst kostenlos, unverändert und ohne
+Bezahlschranke bleibt.
+
+
+§ 5  Beendigung
+
+Bei einem wesentlichen Verstoß gegen diese Lizenz erlischt die
+Erlaubnis nach § 2 automatisch. Du musst dann weitergegebene Kopien
+entfernen und die Weitergabe einstellen.
+
+
+§ 6  Keine Garantie, Haftung
+
+Das Spiel wird kostenlos und „wie besehen“ bereitgestellt, ohne
+Garantie für Fehlerfreiheit, Verfügbarkeit oder Eignung für einen
+bestimmten Zweck. Die Nutzung erfolgt auf eigene Verantwortung.
+Spielstände können verloren gehen (z. B. wenn Browserdaten gelöscht
+werden); lege dafür Sicherungen an.
+
+Soweit gesetzlich zulässig, haftet der Urheber nur für Vorsatz und
+grobe Fahrlässigkeit. Unberührt bleibt die Haftung für Schäden an
+Leben, Körper und Gesundheit sowie eine zwingende gesetzliche Haftung.
+
+
+§ 7  Hobby- und Fanprojekt
+
+Das Spiel ist ein nicht-kommerzielles Hobby- und Fanprojekt. Eine
+Verbindung zu Marken oder Rechteinhabern, auf die darin angespielt
+wird, besteht nicht. Alle genannten Marken und Namen gehören ihren
+jeweiligen Inhabern.
+
+
+§ 8  Schlussbestimmungen
+
+Es gilt deutsches Recht; zwingende Verbraucherschutzvorschriften deines
+Wohnsitzstaates bleiben unberührt. Sollte eine Bestimmung unwirksam
+sein, bleiben die übrigen wirksam.
+
+
+Kurzfassung (nicht rechtsverbindlich):
+  Erlaubt:       spielen, kostenlos unverändert weitergeben, zeigen,
+                 streamen, Memes/Videos/Screenshots machen und damit
+                 Einnahmen erzielen.
+  Nicht erlaubt: verkaufen, verändert veröffentlichen, Teile in ein
+                 eigenes Projekt übernehmen, als eigene Arbeit ausgeben.
+
+
+=====================================================================
+ENGLISH VERSION (courtesy translation – the German text prevails)
+=====================================================================
+
+MÜLL GUMBL – USAGE LICENSE
+Freeware for a non-commercial hobby and fan project · License v1.0
+
+Copyright © 2026 MülltaucherAhPossum. Use is permitted only under the terms below.
+Contact: muellgumbl.wasp766@slmails.com
+
+This is a custom freeware license, not an open-source license. All
+rights are reserved except as expressly granted below.
+
+1. Scope. "The Game" means all files in this package (the game
+   "Müll Gumbl" and its extra files, e.g. the standalone solitaire),
+   including source code, graphics, animations, sounds, music, texts,
+   names and characters.
+
+2. Permitted. You may: (a) download, run and play the Game free of
+   charge; (b) share the Game free of charge, offer it on other
+   platforms or link to it – only unmodified, complete and together
+   with this license file; (c) show, stream and record the Game and use
+   it in Let's Plays, reviews, tutorials or reports; (d) create and
+   publish screenshots, memes, GIFs, videos, fan art and similar
+   creative content showing or based on the Game, including earning
+   income from that content (e.g. YouTube or Twitch advertising);
+   (e) modify the Game privately for your own use as long as you do not
+   publish or distribute the modified version; (f) back up, restore and
+   use your own save files on your own devices. Content under (d) is
+   expressly not a prohibited modification of the Game.
+
+3. Not permitted. (1) You may not sell, rent or charge for the Game or
+   parts of it, nor make it available only against payment,
+   subscription, membership or as part of a paid bundle; no fee may be
+   charged for using or distributing the Game itself. (2) You may not
+   publish or distribute modified, extended, rebuilt or repackaged
+   versions (mods, hacks, cheat versions, re-skins, translations, forks
+   with changed files), even for free. (3) You may not take source
+   code, graphics, animations, sounds, music, texts, characters or any
+   other parts into your own project that is published or distributed.
+   (4) You may not present the Game or parts of it as your own work, or
+   remove copyright notices or this license, or claim that the author
+   endorses your publication.
+
+4. Advertising platforms. Platforms that are generally funded by
+   advertising (e.g. video or game portals) may offer the Game under
+   2(b) as long as the Game itself remains free, unmodified and without
+   a paywall there.
+
+5. Termination. In case of a material breach, the permissions in
+   section 2 end automatically; you must remove distributed copies.
+
+6. No warranty. The Game is provided free of charge and "as is",
+   without warranty of any kind. Use at your own risk. Save data may be
+   lost (e.g. when browser data is deleted); please make backups. To the
+   extent permitted by law the author is liable only for intent and
+   gross negligence; liability for injury to life, body or health and
+   mandatory statutory liability remain unaffected.
+
+7. Hobby and fan project. The Game is a non-commercial hobby and fan
+   project. There is no affiliation with any brand or rights holder it
+   may allude to. All mentioned trademarks and names belong to their
+   respective owners.
+
+8. Final provisions. German law applies; mandatory consumer protection
+   rules of your country of residence remain unaffected. If any
+   provision is invalid, the others remain in force.
