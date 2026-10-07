@@ -341,7 +341,7 @@ const $=id=>document.getElementById(id),C=$('c'),info=$('info'),P=$('panel'),men
 let g=C.getContext('2d');g.imageSmoothingEnabled=false;
 /* ===== Angaben für das Info-/Datenschutz-Fenster: hier eintragen, bevor das Spiel veröffentlicht wird ===== */
 const INFO_NAME='MülltaucherAhPossum',INFO_MAIL='muellgumbl.wasp766@slmails.com',INFO_HOST='GitHub, Inc. (GitHub Pages), USA';
-const APP_VER='1.4.0';   /* Versionsnummer: bei jedem Release hochzählen. Die Spielstand-Signatur (SALT) darf sich dabei NIE ändern, sonst gelten alte Spielstände als verändert. */
+const APP_VER='1.4.1';   /* Versionsnummer: bei jedem Release hochzählen. Die Spielstand-Signatur (SALT) darf sich dabei NIE ändern, sonst gelten alte Spielstände als verändert. */
 const KEY='opossum_v2',cl=v=>Math.max(0,Math.min(100,v)),rnd=a=>a[Math.floor(Math.random()*a.length)];
 
 /* ================= Daten ================= */
@@ -4266,7 +4266,7 @@ function mount(root,opt){
   opt=Object.assign({skill:1,start:200,sb:5,bb:10,portrait:null,meName:'Du',meKey:'opossum',onChange:null,onExit:null},opt||{});
   root.classList.add('pk-wrap');
   const KEYS=['waschbaer','dachs','opossum','klippschliefer'];
-  let G=null,sel=['waschbaer','dachs'],hands=12,timers=[],busy=false,said={},rz=0,destroyed=false,elim=0,nOpp=0,summary=false;
+  let G=null,sel=['waschbaer','dachs'],hands=12,timers=[],busy=false,said={},glance={},chatCd=0,turnSince=0,lastAct=-9,lastPh='',rz=0,destroyed=false,elim=0,nOpp=0,summary=false;
   const later=(f,ms)=>{const t=setTimeout(()=>{if(!destroyed)f()},ms);timers.push(t);return t};
   const img=k=>opt.portrait?'<img src="'+opt.portrait(k)+'" alt="">':'';
   const card=(c,cls)=>'<div class="pk-card '+(SUITS[c.s]==='♥'||SUITS[c.s]==='♦'?'red':'')+(cls?' '+cls:'')+'"><b>'+RK[c.r]+'</b><i>'+SUITS[c.s]+'</i></div>';
@@ -4290,19 +4290,20 @@ function mount(root,opt){
     nextHand();
   }
   function nextHand(){
-    said={};busy=false;startHand(G);
+    said={};glance={};lastPh='pre';busy=false;startHand(G);
     G.players.forEach(p=>{if(p.chips<=0&&!p.out&&!p.human){}});
     renderTable();step();notify();
   }
   /* ---- Tisch ---- */
   function renderTable(){
     const me=G.players[0],pot=potOf(G),isShow=G.phase==='show';
+    if(G.phase!==lastPh){const was=lastPh;lastPh=G.phase;if(was&&(G.phase==='flop'||G.phase==='turn'||G.phase==='river')&&Math.random()<.2)chatAny('poker')}
     const L=G.cur===0&&!isShow?legal(G,0):null;
     let h='<div class="pk-table"><div class="pk-info">Hand '+G.hand+'/'+G.maxHands+' · Blinds '+G.sb+'/'+G.bb+' · Pot <b>'+pot+'</b></div>';
     h+='<div class="pk-opps">'+G.players.slice(1).map(p=>{
       const reveal=isShow&&G.result.showdown&&inHand(p),hole=p.out?'':(p.hole.map(c=>reveal?card(c):back).join(''));
       const st=p.out?'ausgeschieden':p.folded?'Fold':p.allIn?'All-in':(p.last||'');
-      return '<div class="pk-opp'+(p.folded||p.out?' fold':'')+(G.cur===p.id?' turn':'')+(G.dealer===p.id?' dealer':'')+'">'+(said[p.id]?'<div class="pk-bub">'+said[p.id]+'</div>':'')+img(p.key)+'<b>'+p.name+'</b><span class="pk-ch">🪙 '+p.chips+'</span><div class="pk-hole">'+hole+'</div><small>'+st+(p.bet?' · Einsatz '+p.bet:'')+'</small></div>'}).join('')+'</div>';
+      return '<div class="pk-opp'+(p.folded||p.out?' fold':'')+(G.cur===p.id?' turn':'')+(G.dealer===p.id?' dealer':'')+(glance[p.id]?' glance':'')+'">'+(said[p.id]?'<div class="pk-bub">'+said[p.id]+'</div>':'')+img(p.key)+'<b>'+p.name+'</b><span class="pk-ch">🪙 '+p.chips+'</span><div class="pk-hole">'+hole+'</div><small>'+st+(p.bet?' · Einsatz '+p.bet:'')+'</small></div>'}).join('')+'</div>';
     h+='<div class="pk-board">'+[0,1,2,3,4].map(i=>G.board[i]?card(G.board[i]):'<div class="pk-slot"></div>').join('')+'</div>';
     h+='<div class="pk-me'+(G.cur===0?' turn':'')+(G.dealer===0?' dealer':'')+'">'+img(opt.meKey)+'<div><b>'+me.name+'</b><br><span class="pk-ch">🪙 '+me.chips+'</span>'+(me.bet?' · Einsatz '+me.bet:'')+'</div><div class="pk-hole">'+me.hole.map(c=>card(c)).join('')+'</div></div>';
     h+='<div class="pk-msg">'+msgText()+'</div><div class="pk-act">'+actHtml(L,isShow)+'</div></div>';
@@ -4344,7 +4345,16 @@ function mount(root,opt){
       q('.pk-rz').onclick=()=>humanAct({t:'raise',to:rz});
     }
   }
-  function humanAct(a){if(busy||G.cur!==0)return;act(G,0,a);after()}
+  function humanAct(a){
+    if(busy||G.cur!==0)return;
+    act(G,0,a);
+    const me=G.players[0],r=Math.random();
+    if(G.phase!=='show'){
+      if(a.t==='fold'&&r<.45)chatAny('hfold');
+      else if(a.t==='raise'&&(me.allIn?r<.85:r<.35))chatAny('hraise',true);
+    }
+    after();
+  }
   function after(){
     if(G.phase==='show'){revealEnd()}
     renderTable();notify();step();
@@ -4353,8 +4363,43 @@ function mount(root,opt){
     G.result.winners.forEach(x=>{const p=G.players[x.id];if(!p.human&&PERS[p.key])said[x.id]=rnd(PERS[p.key].say.win)});
     G.players.slice(1).forEach(p=>{if(!p.human&&!said[p.id]&&p.chips>0&&!G.result.winners.some(x=>x.id===p.id)&&Math.random()<.4)said[p.id]=rnd(PERS[p.key].say.lose)});
     elim=G.players.slice(1).filter(p=>p.chips<=0).length;
+    if(inHand(G.players[0])&&G.result.showdown&&Math.random()<.7)chatAny(G.result.winners.some(x=>x.id===0)?'admire':'mock',true);
   }
   const rnd=a=>a[Math.floor(Math.random()*a.length)];
+  /* Zwischenrufe der Mitspieler (wie beim Skat): bewundernd, spöttisch, Kneipe, Poker, Reaktion auf dein Erhöhen/Aussteigen, Warten */
+  const CH={
+    waschbaer:{admire:['Oha, sauber gespielt!','Raffiniert! Das gefällt mir.'],mock:['Danke für die Chips!','Hihi, das war teuer.'],poker:['Ich riech einen Bluff …','Die Karten lügen nie. Ich schon.'],hraise:['Mutig, mutig …','Das riecht nach Bluff.'],hfold:['Schon weg? Schade.','Der Waschbär bedankt sich.'],pub:['Wer zahlt die nächste Runde?','Ich riech Bier …']},
+    dachs:{admire:['Pff … nicht schlecht.','Okay, das saß.'],mock:['Ha! Hast du geschlafen?','Das tut weh, ne?'],poker:['Alles oder nichts!','Ich hab das beste Blatt, wetten?'],hraise:['Na los, zeig es mir!','Große Klappe, was?'],hfold:['Feigling!','Hasenfuß!'],pub:['Noch ein Bier, Wirt!','Prost, ihr Schnarchnasen!']},
+    opossum:{admire:['*öffnet ein Auge* Respekt.','Hm. Beeindruckend.'],mock:['Autsch. Sehr autsch.','*lacht still*'],poker:['*schnarcht* … Pokerface.','Ich bin tot. Oder bluffe ich?'],hraise:['*zuckt kurz*','Hm. Das war laut.'],hfold:['*nickt langsam*','Vernünftig.'],pub:['*schnarcht leise*','Noch ein Schlückchen …']},
+    klippschliefer:{admire:['Wirklich gut gespielt.','Ach, wie elegant!'],mock:['Oh. Das war … mutig.','Schade drum.'],poker:['Ob das Blatt reicht?','Ich zähle lieber Chips als Karten.'],hraise:['Oh! So viel?','Ui, das wird spannend.'],hfold:['Klug, sehr klug.','Nächstes Mal, bestimmt.'],pub:['Ein Tee wäre jetzt nett.','Gemütlich hier, nicht?']}
+  };
+  const POOL={
+    admire:['Respekt!','Sauber!','Gut gespielt!'],mock:['Autsch!','Das war nix.','Na na na …'],
+    pub:['Prost!','Noch ein Bier?','Kellner, noch eine Runde!','Der Wirt schaut schon.','Die Runde geht auf dich!','Wo bleibt der Schnaps?'],
+    poker:['Pokerface!','Flop, Turn, River – Fluss!','Die Blinds steigen …','All in oder gar nicht!','Ohne Mut kein Pot.','Full House? Nur im Wirtshaus.','Der Dealer mischt, der Wirt schenkt ein.'],
+    hraise:['Oho!','Blufft du?','Jetzt wird es ernst.','Na, wer hat hier Mut?'],
+    hfold:['Feigling!','Schon durch?','Ohne Mut kein Pot.','Schade, Schade.'],
+    wait:['Heute noch?','Schläfst du?','Wir werden älter …','Denk ruhig, ich trink derweil.','Der Wirt macht gleich zu.']
+  };
+  const rndOpp=()=>1+Math.floor(Math.random()*Math.max(1,G.players.length-1));
+  /* Sprechblase und Blickrichtung direkt im Bild ändern, ohne alles neu zu zeichnen (sonst gehen Klicks verloren) */
+  function paint(i){
+    const el=root.querySelectorAll('.pk-opp')[i-1];if(!el)return;
+    let b=el.querySelector('.pk-bub');
+    if(said[i]){if(!b){b=document.createElement('div');b.className='pk-bub';el.insertBefore(b,el.firstChild)}b.textContent=said[i]}else if(b)b.remove();
+    el.classList.toggle('glance',!!glance[i]);
+  }
+  function chat(i,cat,force){
+    if(destroyed||!G||summary||!G.players[i]||G.players[i].out||said[i]||(!force&&Date.now()<chatCd))return false;
+    const per=CH[G.players[i].key]||CH.klippschliefer,own=per[cat],pool=(own&&Math.random()<.55)?own:POOL[cat];
+    const txt=rnd(pool);said[i]=txt;glance[i]=1;chatCd=Date.now()+5000;paint(i);
+    later(()=>{if(said[i]===txt)delete said[i];delete glance[i];paint(i)},3400);return true;
+  }
+  function chatAny(cat,force){
+    const ids=G.players.slice(1).filter(p=>!p.out).map(p=>p.id).sort(()=>Math.random()-.5);
+    for(const i of ids)if(chat(i,cat,force))return true;
+    return false;
+  }
   function step(){
     if(destroyed||!G||G.phase==='show'||G.phase==='over'||busy)return;
     if(G.autoRun){
@@ -4396,7 +4441,14 @@ function mount(root,opt){
   }
   const dog=setInterval(()=>{if(!destroyed&&G&&!busy&&G.phase!=='show'&&G.phase!=='over'&&(G.cur>0||G.autoRun))step()},2500);timers.push(dog);
   renderSetup();
-  return{info:info,leave:leave,destroy:()=>{destroyed=true;timers.forEach(t=>{clearTimeout(t);clearInterval(t)});root.innerHTML='';root.classList.remove('pk-wrap')},debugGame:()=>G};
+  /* Ab und zu zu dir herübergucken; bei langem Überlegen mahnen */
+  const amb=setInterval(()=>{
+    if(destroyed||!G||summary||G.phase==='show'||G.phase==='over'||G.phase==='idle')return;
+    const now=Date.now();
+    if(G.cur===0){if(lastAct!==0){lastAct=0;turnSince=now}else if(now-turnSince>10000&&now>chatCd){chatAny('wait');turnSince=now+8000}}else lastAct=G.cur;
+    if(Math.random()<.2){const i=rndOpp();if(G.players[i]&&!G.players[i].out&&!glance[i]&&!said[i]){glance[i]=1;paint(i);later(()=>{delete glance[i];paint(i)},1400)}}
+  },2000);timers.push(amb);
+  return{info:info,leave:leave,chat:(i,c)=>chat(i,c,true),destroy:()=>{destroyed=true;timers.forEach(t=>{clearTimeout(t);clearInterval(t)});root.innerHTML='';root.classList.remove('pk-wrap')},debugGame:()=>G};
 }
 return{mount:mount,Logic:Logic};
 })();
@@ -4494,10 +4546,40 @@ function mount(root,opt){
   opt=Object.assign({start:100,portrait:null,meName:'Du',meKey:'opossum',onChange:null,onExit:null},opt||{});
   root.classList.add('pk-wrap');
   const KEYS=['waschbaer','dachs','opossum','klippschliefer'];
-  let G=null,dealerKey='waschbaer',rounds=12,timers=[],busy=false,bubble='',destroyed=false,sel=10,summary=false;
+  let G=null,dealerKey='waschbaer',rounds=12,timers=[],busy=false,bubble='',glance=false,chatCd=0,lastKey='',phSince=0,destroyed=false,sel=10,summary=false;
   const later=(f,ms)=>{const t=setTimeout(()=>{if(!destroyed)f()},ms);timers.push(t);return t};
   const img=k=>opt.portrait?'<img src="'+opt.portrait(k)+'" alt="">':'';
   const rnd=a=>a[Math.floor(Math.random()*a.length)];
+  /* Zwischenrufe des Gebers (wie beim Skat): zu deinen Zügen, zum Spiel, Kneipe, Warten */
+  const CH={
+    waschbaer:{risky:['Gier frisst Hirn, mein Freund.','Ich wasch mir schon die Pfoten.'],dbl:['Ooh, das wasch ich gleich ab!','Doppelt? Ich liebe dich.'],weak:['Schon halten? Ich nehm es gern.'],strong:['Hm, saubere Pfoten hast du.'],pub:['Ich riech Bier …','Wer zahlt die nächste Runde?']},
+    dachs:{risky:['Zieh nur, Angsthase!','Hast du Mut oder nicht?'],dbl:['Aha! Jetzt wird es laut!','Auf die Zwölf!'],weak:['Pah, das reicht doch nie!','Halten? Feigling!'],strong:['Pff … Glück gehabt.'],pub:['Noch ein Bier, Wirt!','Prost, ihr Schnarchnasen!']},
+    opossum:{risky:['*zuckt* … nein, ich schlaf weiter.','Das endet tot. Wie ich.'],dbl:['*öffnet ein Auge* Verdoppelt?!'],weak:['*gähnt* Schwach.'],strong:['*öffnet ein Auge* Respekt.'],pub:['*schnarcht leise*','Noch ein Schlückchen …']},
+    klippschliefer:{risky:['Oh je, ist das nicht gefährlich?','Ich würde da aufhören …'],dbl:['Oh! Wie mutig von dir!'],weak:['Hm. Na, wir werden sehen.'],strong:['Ach, wie schön, ein gutes Blatt!'],pub:['Ein Tee wäre jetzt nett.','Gemütlich hier, nicht?']}
+  };
+  const POOL={
+    risky:['Bei 17 und mehr? Mutig!','Das kann nur schiefgehen …','Ziehst du echt noch eine?','Ich seh schon die Pleite.'],
+    dbl:['Verdoppeln?! Respekt.','Alles auf eine Karte!','Du bist ja lebensmüde.','Doppelt hält besser!'],
+    weak:['Schon halten? Bei dem Blatt?','Das wird knapp für dich.','Nicht gerade stark …'],
+    strong:['Oha, ein starkes Blatt!','Das wird eng für mich.','Das sieht gut aus für dich.'],
+    big:['Hoher Einsatz! Der Wirt wird nervös.','Mutig, mutig …','Da hat einer Chips übrig.'],
+    pub:['Noch ein Bier?','Prost!','Kellner, noch eine Runde!','Der Wirt schaut schon.','Die Runde geht auf dich!','Wo bleibt der Schnaps?'],
+    game:['Bis 17 zieh ich, dann ist Schluss.','21 ist die Zahl der Götter.','Ass zählt eins oder elf – wie ich will.','Wer zu viel will, kriegt gar nichts.','Die Bank gewinnt immer. Fast.','Zählen kann ich. Bis 21.'],
+    wait:['Heute noch?','Schläfst du?','Ich misch schon mal …','Denk ruhig, ich trink derweil.']
+  };
+  /* Sprechblase und Blickrichtung direkt im Bild ändern, ohne alles neu zu zeichnen (sonst gehen Klicks verloren) */
+  function paint(){
+    const el=root.querySelector('.pk-opp');if(!el)return;
+    let b=el.querySelector('.pk-bub');
+    if(bubble){if(!b){b=document.createElement('div');b.className='pk-bub';el.insertBefore(b,el.firstChild)}b.textContent=bubble}else if(b)b.remove();
+    el.classList.toggle('glance',!!glance);
+  }
+  function chat(cat,force){
+    if(destroyed||!G||summary||(bubble&&!force)||(!force&&Date.now()<chatCd))return false;
+    const per=CH[dealerKey]||CH.klippschliefer,own=per[cat],pool=(own&&Math.random()<.6)?own:POOL[cat];
+    const txt=rnd(pool);bubble=txt;glance=true;chatCd=Date.now()+4000;paint();
+    later(()=>{if(bubble===txt)bubble='';glance=false;paint()},3400);return true;
+  }
   const card=c=>'<div class="pk-card '+(c.s===1||c.s===2?'red':'')+'"><b>'+RK[c.r]+'</b><i>'+SUITS[c.s]+'</i></div>';
   const back='<div class="pk-card back"></div>';
   function info(){return{started:!!G,chips:G?G.chips:opt.start,start:opt.start,rounds:G?G.round:0,over:!!(G&&G.over),wins:G?G.stats.wins:0,bj:G?G.stats.bj:0,rebuys:G?G.rebuys:0}}
@@ -4516,7 +4598,7 @@ function mount(root,opt){
     if(!G)return;
     const P=PERS[dealerKey],res=G.result,hv=handVal(G.player);
     let h='<div class="pk-table"><div class="pk-info">Runde '+Math.min(G.round+(G.phase==='bet'||G.phase==='done'?(G.phase==='done'?0:1):1),G.maxRounds)+'/'+G.maxRounds+' · 🪙 <b>'+G.chips+'</b>'+(G.bet?' · Einsatz '+G.bet:'')+'</div>';
-    h+='<div class="pk-opps"><div class="pk-opp">'+(bubble?'<div class="pk-bub">'+bubble+'</div>':'')+img(dealerKey)+'<b>'+P.name+'</b><small>Geber</small></div></div>';
+    h+='<div class="pk-opps"><div class="pk-opp'+(glance?' glance':'')+'">'+(bubble?'<div class="pk-bub">'+bubble+'</div>':'')+img(dealerKey)+'<b>'+P.name+'</b><small>Geber</small></div></div>';
     h+='<div class="bj-hand">'+(G.dealer.length?G.dealer.map((c,i)=>(i===1&&G.hole)?back:card(c)).join(''):'<div class="pk-slot"></div><div class="pk-slot"></div>')+'</div>';
     h+='<div class="bj-tot">'+(G.dealer.length?(G.hole?'Geber zeigt '+handVal([G.dealer[0]]).v:'Geber: '+tot(G.dealer)+(handVal(G.dealer).bust?' – über 21!':'')):'')+'</div>';
     h+='<div class="bj-hand">'+(G.player.length?G.player.map(card).join(''):'<div class="pk-slot"></div><div class="pk-slot"></div>')+'</div>';
@@ -4547,11 +4629,11 @@ function mount(root,opt){
   function wire(){
     const q=s=>root.querySelector(s);
     root.querySelectorAll('[data-bet]').forEach(b=>b.onclick=()=>{sel=+b.dataset.bet;render()});
-    if(q('.bj-deal'))q('.bj-deal').onclick=()=>{if(placeBet(G,sel)){afterDeal()}};
-    if(q('.bj-hit'))q('.bj-hit').onclick=()=>{hit(G);afterAct()};
-    if(q('.bj-stand'))q('.bj-stand').onclick=()=>{stand(G);afterAct()};
-    if(q('.bj-dbl'))q('.bj-dbl').onclick=()=>{dbl(G);afterAct()};
-    if(q('.bj-next'))q('.bj-next').onclick=()=>{next(G);bubble='';render()};
+    if(q('.bj-deal'))q('.bj-deal').onclick=()=>{const bet=sel,all=G.chips;if(placeBet(G,sel)){if(bet>=Math.max(50,all*.5)&&Math.random()<.6)chat('big',true);afterDeal()}};
+    if(q('.bj-hit'))q('.bj-hit').onclick=()=>{const b=handVal(G.player).v;hit(G);if(G.phase==='play'&&b>=15&&Math.random()<.5)chat('risky',true);afterAct()};
+    if(q('.bj-stand'))q('.bj-stand').onclick=()=>{const v=handVal(G.player).v,r=Math.random();stand(G);if(v<=13&&r<.45)chat('weak',true);else if(v>=20&&r<.5)chat('strong',true);afterAct()};
+    if(q('.bj-dbl'))q('.bj-dbl').onclick=()=>{const ok=canDouble(G);dbl(G);if(ok&&G.phase!=='done'&&Math.random()<.7)chat('dbl',true);afterAct()};
+    if(q('.bj-next'))q('.bj-next').onclick=()=>{next(G);bubble='';glance=false;render();if(Math.random()<.2)later(()=>chat(Math.random()<.5?'pub':'game'),700)};
     if(q('.bj-rebuy'))q('.bj-rebuy').onclick=()=>{rebuy(G);next(G);notify();render()};
     if(q('.bj-fin'))q('.bj-fin').onclick=()=>renderSummary();
   }
@@ -4560,7 +4642,7 @@ function mount(root,opt){
   function dealerTurn(){
     if(busy)return;busy=true;
     const stepFn=()=>{
-      const more=dealerStep(G);render();
+      const more=dealerStep(G);if(more&&Math.random()<.2)chat('game',true);render();
       if(more)later(stepFn,750);else{busy=false;finish(G);render();notify();endRound()}
     };
     later(stepFn,700);
@@ -4577,7 +4659,15 @@ function mount(root,opt){
     root.querySelector('.pk-again').onclick=()=>{summary=false;G=null;renderSetup();notify()};
   }
   renderSetup();
-  return{info:info,leave:()=>info(),destroy:()=>{destroyed=true;timers.forEach(t=>{clearTimeout(t);clearInterval(t)});root.innerHTML='';root.classList.remove('pk-wrap')},debugGame:()=>G};
+  /* Ab und zu zu dir herübergucken; bei langem Überlegen mahnen */
+  const amb=setInterval(()=>{
+    if(destroyed||!G||summary||G.over)return;
+    const now=Date.now(),key=G.phase+':'+G.round;
+    if(key!==lastKey){lastKey=key;phSince=now}
+    else if((G.phase==='bet'||G.phase==='play')&&now-phSince>10000&&!bubble){chat('wait',true);phSince=now+8000}
+    if(Math.random()<.2&&!glance&&!bubble){glance=true;paint();later(()=>{glance=false;paint()},1400)}
+  },2000);timers.push(amb);
+  return{info:info,leave:()=>info(),chat:c=>chat(c,true),destroy:()=>{destroyed=true;timers.forEach(t=>{clearTimeout(t);clearInterval(t)});root.innerHTML='';root.classList.remove('pk-wrap')},debugGame:()=>G};
 }
 return{mount:mount,Logic:Logic};
 })();
